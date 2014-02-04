@@ -30,7 +30,7 @@ func NewRequestor(config *Config, apigeeToken string) Requestor {
 }
 
 func (r *Requestor) NewRequest(url string) (http.Request, error) {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url + "?apitoken=" + r.Apigee.Apikey, nil)
 	if err != nil {
 		return *req, err
 	}
