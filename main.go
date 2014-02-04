@@ -15,6 +15,7 @@ type RequestHandler struct {
 func (rh *RequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	startTime := time.Now()
 	path := r.URL.Path
+	var content string
 
 	if path != "/status" {
 		token := r.Header.Get("Authorization")
@@ -32,10 +33,11 @@ func (rh *RequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("X--" + k + "--X", v[0])
 		}
 
+		content = response[0].Body
 		w.Header().Add("ReadTime", time.Now().Sub(startTime).String())
 	}
 
-	fmt.Fprint(w, response[0].Body)
+	fmt.Fprint(w, content)
 }
 
 func newRequestHandler(config *Config) *RequestHandler {
