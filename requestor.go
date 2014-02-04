@@ -5,6 +5,7 @@ import (
 	"time"
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
 
 var client = &http.Client{}
@@ -91,13 +92,22 @@ func runRequest(req *http.Request, res chan Response) {
 			fmt.Println(err)
 		} else {
 			if r.StatusCode < 200 || r.StatusCode >= 300 {
-				fmt.Println("======================================")
+				fmt.Println(strings.Repeat("=", 40))
+				fmt.Println("Request: " + req.URL.String())
+				for k, v := range req.Header {
+					fmt.Println(k, ":", v)
+				}
+
+				fmt.Println(strings.Repeat("-", 40))
+
 				fmt.Println("Status: " + r.Status)
 				for k, v := range r.Header {
 					fmt.Println(k, ":", v)
 				}
+
+				fmt.Println("Body:")
 				fmt.Println(string(body))
-				fmt.Println("======================================")
+				fmt.Println(strings.Repeat("=", 40))
 			} else {
 				response.Body = string(body)
 				response.Headers = r.Header
