@@ -44,7 +44,5 @@ func getConfig() Config {
 		os.Exit(1)
 	}
 
-	config.UseApigee = *apigee
-
 	return config
 }
