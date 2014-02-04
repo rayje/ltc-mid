@@ -15,22 +15,26 @@ type RequestHandler struct {
 func (rh *RequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	startTime := time.Now()
 	path := r.URL.Path
-	token := r.Header.Get("Authorization")
 
-	var apigeeToken string
-	if (token != "") {
-		apigeeToken = strings.Fields(token)[1]
+	if path != "/status" {
+		token := r.Header.Get("Authorization")
+
+		var apigeeToken string
+		if (token != "") {
+			apigeeToken = strings.Fields(token)[1]
+		}
+
+		requestor := NewRequestor(&rh.Config, apigeeToken)
+		response := requestor.MakeRequests(path)
+
+		// Echo Headers
+		for k, v := range response[0].Headers {
+			w.Header().Add("X--" + k + "--X", v[0])
+		}
+
+		w.Header().Add("ReadTime", time.Now().Sub(startTime).String())
 	}
 
-	requestor := NewRequestor(&rh.Config, apigeeToken)
-	response := requestor.MakeRequests(path)
-
-	// Echo Headers
-	for k, v := range response[0].Headers {
-		w.Header().Add("X--" + k + "--X", v[0])
-	}
-
-	w.Header().Add("ReadTime", time.Now().Sub(startTime).String())
 	fmt.Fprint(w, response[0].Body)
 }
 
