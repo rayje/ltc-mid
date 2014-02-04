@@ -21,15 +21,12 @@ type Requestor struct {
 	Apigee ApigeeConfig
 }
 
-func NewRequestor(config *Config, apigeeToken string) (Requestor, error) {
-	var requestor Requestor
-	var err error
-
+func NewRequestor(config *Config, apigeeToken string) Requestor {
 	return Requestor{
 		Config: *config,
 		ApigeeToken: apigeeToken,
 		Apigee: config.Apigee,
-	}, nil
+	}
 }
 
 func (r *Requestor) NewRequest(url string) (http.Request, error) {

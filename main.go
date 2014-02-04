@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-
-
 type RequestHandler struct {
 	Config Config
 }
@@ -24,13 +22,7 @@ func (rh *RequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		apigeeToken = strings.Fields(token)[1]
 	}
 
-	requestor, err := NewRequestor(&rh.Config, apigeeToken)
-	// Use 500 for errors
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	requestor := NewRequestor(&rh.Config, apigeeToken)
 	response := requestor.MakeRequests(path)
 
 	// Echo Headers
