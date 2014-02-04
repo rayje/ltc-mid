@@ -22,7 +22,6 @@ type Requestor struct {
 }
 
 func NewRequestor(config *Config, apigeeToken string) (Requestor, error) {
-	var apigeeToken string
 	var requestor Requestor
 	var err error
 
