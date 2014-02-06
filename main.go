@@ -26,14 +26,20 @@ func (rh *RequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		requestor := NewRequestor(&rh.Config, apigeeToken)
-		response := requestor.MakeRequests(path)
+		responses := requestor.MakeRequests(path)
 
-		// Echo Headers
-		for k, v := range response[0].Headers {
+		// Set body and Echo Headers
+		content = responses[0].Body
+		for k, v := range responses[0].Headers {
 			w.Header().Add("X--" + k + "--X", v[0])
 		}
 
-		content = response[0].Body
+		numResponses := len(responses)
+		durations := make([]string, numResponses)
+		for i := 0; i < numResponses; i++ {
+			durations[i] = fmt.Sprintf("%d", responses[i].Duration.Nanoseconds())
+		}
+		w.Header().Add("Durations", strings.Join(durations,","))
 		w.Header().Add("ReadTime", time.Now().Sub(startTime).String())
 	}
 
