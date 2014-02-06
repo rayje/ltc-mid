@@ -39,7 +39,14 @@ func (rh *RequestHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < numResponses; i++ {
 			durations[i] = fmt.Sprintf("%d", responses[i].Duration.Nanoseconds())
 		}
+
+		readtimes := make([]string, numResponses)
+		for i := 0; i < numResponses; i++ {
+			readtimes[i] = responses[i].Headers.Get("ReadTime")
+		}
+
 		w.Header().Add("Durations", strings.Join(durations,","))
+		w.Header().Add("ReadTimes", strings.Join(readtimes,","))
 		w.Header().Add("ReadTime", time.Now().Sub(startTime).String())
 	}
 
