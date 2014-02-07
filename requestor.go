@@ -85,6 +85,8 @@ func runRequest(req *http.Request, res chan Response) {
 		Duration:  time.Since(start),
 	}
 
+	defer r.Body.Close()
+
 	if err != nil {
 		fmt.Println(err)
 	} else {
